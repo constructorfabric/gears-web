@@ -1,7 +1,8 @@
 # Code owners for gears-web
 #
-# Owners listed here are automatically requested as reviewers on any pull
-# request that touches files matching their pattern.
+# Owners listed here are automatically requested as reviewers on a pull request
+# that touches files matching their pattern. Draft pull requests are excluded:
+# owners are requested once the pull request is marked ready for review.
 #
 # Syntax: <pattern> <owner> [<owner>...]
 #   - Patterns follow gitignore rules (no "!" negation, no "[a-z]" ranges).
