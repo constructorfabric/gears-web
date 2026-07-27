@@ -1,0 +1,14 @@
+# Code owners for gears-web
+#
+# Owners listed here are automatically requested as reviewers on a pull request
+# that touches files matching their pattern. Draft pull requests are excluded:
+# owners are requested once the pull request is marked ready for review.
+#
+# Syntax: <pattern> <owner> [<owner>...]
+#   - Patterns follow gitignore rules (no "!" negation, no "[a-z]" ranges).
+#   - The LAST matching pattern wins, so keep general rules above specific ones.
+#   - Owners must have write access to this repository, or the line is ignored.
+# Docs: https://docs.github.com/articles/about-code-owners
+
+# Default owners for everything in the repository
+*   @frontgeeks @hello1101n @eddeisling
