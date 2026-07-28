@@ -1,0 +1,23 @@
+{
+  "name": "telemetry-demo-web",
+  "version": "0.0.0",
+  "description": "Browser demo for @gears-web/telemetry, with a local collector that echoes received events.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "predev": "pnpm --dir ../../telemetry install && pnpm --dir ../../telemetry run build",
+    "dev": "vite",
+    "prebuild": "pnpm --dir ../../telemetry install && pnpm --dir ../../telemetry run build",
+    "build": "vite build",
+    "preview": "vite preview",
+    "type-check": "tsc -p tsconfig.json && tsc -p tsconfig.node.json"
+  },
+  "dependencies": {
+    "@gears-web/telemetry": "link:../../telemetry"
+  },
+  "devDependencies": {
+    "@types/node": "22.15.29",
+    "typescript": "6.0.3",
+    "vite": "8.0.16"
+  }
+}
