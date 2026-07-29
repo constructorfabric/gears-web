@@ -22,8 +22,15 @@ export function telemetryAppInfoPlugin() {
           record.context_service_version = record.context_source_app_version;
         }
 
+        // Name and version are one pair and must describe the same thing. When an element hook up
+        // the tree set the service, the app fields follow that service — taking the name from the
+        // hook but the version from the shell app reported a mismatched pair. No fallback to the
+        // source version: for a hook that sets `context_service_name` without a version, that
+        // fallback is exactly the cross-source pairing this fixes, so the field is left unset
+        // instead. On the default path `context_service_version` is already the source version, so
+        // nothing changes there.
         record.context_app_name = record.context_service_name;
-        record.context_app_version = record.context_source_app_version;
+        record.context_app_version = record.context_service_version;
 
         // call_chain may already hold entries contributed by a nested element hook
         record.context_call_chain = [

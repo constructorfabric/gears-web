@@ -43,7 +43,7 @@ Call `destroy()` on teardown to remove listeners and stop the scheduler.
 | Option            | Type      | Default    | Description                                                                                                        |
 | ----------------- | --------- | ---------- | ------------------------------------------------------------------------------------------------------------------ |
 | `appName`         | `string`  | *required* | Sent as `context_source_app_name`, and the default for `context_app_name` and `context_service_name`.               |
-| `appVersion`      | `string`  | *required* | Application version, sent as `context_app_version`.                                                                 |
+| `appVersion`      | `string`  | *required* | Sent as `context_source_app_version`, and the default for `context_app_version` and `context_service_version`.       |
 | `url`             | `string`  | see below  | Endpoint events are POSTed to. Defaults to the same-origin path `/api/events` when `apiVersion` is `1`, otherwise `/api/telemetry/v{apiVersion}/events`. |
 | `autocapture`     | `boolean` | `true`     | Automatically capture `click`, `change` and `submit` events from the page.                                           |
 | `enabled`         | `boolean` | `true`     | Master switch. When `false`, nothing is collected or sent.                                                           |
@@ -152,7 +152,11 @@ ancestors and invokes every hook it finds:
   error is rethrown after the event is emitted, so it reaches `window.onerror`.
 
 Only `context_service_name`, `context_service_version` and `context_call_chain` may be set through
-a hook — other record fields are overwritten by built-in plugins before send.
+a hook — other record fields are overwritten by built-in plugins before send. `context_app_name`
+and `context_app_version` follow the service pair: `appInfo` copies them from
+`context_service_name`/`context_service_version`, so a hook that sets a service name without a
+version leaves `context_app_version` unset on that record rather than pairing the service name with
+the shell app's version.
 
 Set `context_call_chain` whenever you set `context_service_name`: the built-in `appInfo` plugin
 prepends the app name and warns if the resulting chain does not contain the service. The value must

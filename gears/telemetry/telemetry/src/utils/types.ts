@@ -26,7 +26,8 @@ export type TelemetryConfig = {
    */
   appName: string;
   /**
-   * Version of the app
+   * This version will be passed to `context_source_app_version` and used as a default value for
+   * `context_app_version` and `context_service_version`
    */
   appVersion: string;
   /**

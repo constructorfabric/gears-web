@@ -109,7 +109,10 @@ describe('autocapture element hook', () => {
     expect(value.context_service_version).toBe('1.2.3');
     // appInfo always prepends the shell app name onto whatever chain autocapture set.
     expect(value.context_call_chain).toEqual(['cloud', 'service-a']);
+    // The app pair follows the service pair, so both come from the hook — taking the name from the
+    // hook and the version from the shell app would describe two different things.
     expect(value.context_app_name).toBe('service-a');
+    expect(value.context_app_version).toBe('1.2.3');
   });
 
   test('should use the closest ancestor complete field-set atomically, without a farther-out override', () => {
@@ -202,6 +205,10 @@ describe('autocapture element hook', () => {
     expect(value.context_call_chain).toEqual(['cloud', 'outer-service', 'inner-service']);
     // Outer's version is not used to fill the gap inner left.
     expect(value.context_service_version).toBeUndefined();
+    // Nor is the shell app's: appInfo mirrors the service pair, so an unset service version leaves
+    // the app version unset rather than pairing inner's name with the shell's 1.0.0.
+    expect(value.context_app_name).toBe('inner-service');
+    expect(value.context_app_version).toBeUndefined();
   });
 
   test('should not let an explicit undefined field from the closest hook blank its other fields or let a farther-out hook fill it', () => {
