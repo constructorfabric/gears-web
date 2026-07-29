@@ -75,16 +75,16 @@ export function shouldCaptureValue(
 
 export function shouldCaptureElement(el: Element) {
   // don't include hidden or password fields
-  // `el.type` is a DOM element, not a string, when `el` is a form with a child input[name="type"]
   const rawType: unknown = (el as HTMLInputElement).type;
   const type = typeof rawType === 'string' ? rawType : '';
+  // it's possible for el.type to be a DOM element if el is a form with a child input[name="type"]
   if (['hidden', 'password'].includes(type.toLowerCase())) {
     return false;
   }
 
   // filter out data from fields that look like sensitive fields
-  // `el.name` carries the same non-string hazard, so fall through to `el.id` rather than past both
   const rawName: unknown = (el as HTMLInputElement).name;
+  // it's possible for el.name or el.id to be a DOM element if el is a form with a child input[name="name"]
   const name = typeof rawName === 'string' && rawName ? rawName : el.id;
 
   const sensitiveNameRegex =
@@ -246,8 +246,6 @@ export function* eachParentElement(target: Element, includeTarget = false) {
 
   let curEl = target;
   while (curEl.parentNode && !isTag(curEl, 'body')) {
-    // Snapshot before the `yield`: the consumer that resumes us runs element hooks, and one that
-    // detaches `curEl` leaves `curEl.parentNode` null on the far side.
     const parent = curEl.parentNode;
 
     if (isShadowRoot(parent)) {
@@ -258,8 +256,6 @@ export function* eachParentElement(target: Element, includeTarget = false) {
       continue;
     }
 
-    // `body` is the only boundary below, and a target outside it never reaches one: `<head>` walks
-    // up to `document`, a fragment's child to the fragment. Consumers expect an `Element`.
     if (!isElementNode(parent)) {
       return;
     }

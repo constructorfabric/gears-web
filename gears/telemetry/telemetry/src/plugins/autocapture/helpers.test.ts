@@ -1,8 +1,6 @@
 import { afterEach, describe, expect, test } from 'vitest';
 import { eachParentElement, shouldCaptureElement } from './helpers';
 
-// Separate file because autocapture.test.ts calls `vi.mock('./helpers')`.
-
 afterEach(() => {
   document.body.innerHTML = '';
   document.head.querySelectorAll('[data-test]').forEach((el) => el.remove());
