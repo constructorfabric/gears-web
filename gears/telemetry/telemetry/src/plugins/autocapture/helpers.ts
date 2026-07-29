@@ -252,11 +252,15 @@ export function* eachParentElement(target: Element, includeTarget = false) {
 
   let curEl = target;
   while (curEl.parentNode && !isTag(curEl, 'body')) {
-    if (isShadowRoot(curEl.parentNode)) {
+    // Snapshot before the `yield`: the consumer that resumes us runs element hooks, and one that
+    // detaches `curEl` leaves `curEl.parentNode` null on the far side.
+    const parent = curEl.parentNode;
+
+    if (isShadowRoot(parent)) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      yield (curEl.parentNode as any).host;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      curEl = (curEl.parentNode as any).host;
+      const { host } = parent as any;
+      yield host;
+      curEl = host;
       continue;
     }
 
@@ -265,11 +269,11 @@ export function* eachParentElement(target: Element, includeTarget = false) {
     // the fragment (nodeType 11). Neither is an `Element` and neither has a `dataset`, which the
     // walk's consumer dereferences on the very next line — so stop here rather than yield one
     // typed as `Element`.
-    if (!isElementNode(curEl.parentNode)) {
+    if (!isElementNode(parent)) {
       return;
     }
 
-    yield curEl.parentNode;
-    curEl = curEl.parentNode;
+    yield parent;
+    curEl = parent;
   }
 }

@@ -59,6 +59,53 @@ describe('eachParentElement', () => {
 
     expect([...eachParentElement(button)]).toEqual([wrapper, document.body]);
   });
+
+  test('keeps walking when a consumer detaches the current element between yields', () => {
+    // Regression: the generator suspends at `yield`, and the consumer resuming it runs untrusted
+    // element hooks. Re-reading `curEl.parentNode` after the yield read `null` for a detached
+    // element, and the next loop condition dereferenced it.
+    const wrapper = document.createElement('div');
+    const button = document.createElement('button');
+    wrapper.appendChild(button);
+    document.body.appendChild(wrapper);
+
+    const walked: Element[] = [];
+
+    expect(() => {
+      for (const el of eachParentElement(button, true)) {
+        walked.push(el);
+
+        if (el === wrapper) {
+          button.remove();
+        }
+      }
+    }).not.toThrow();
+
+    expect(walked).toEqual([button, wrapper, document.body]);
+  });
+
+  test('keeps crossing a shadow boundary when the current element is detached between yields', () => {
+    // Same hazard on the shadow branch, where the re-read was `curEl.parentNode.host`.
+    const host = document.createElement('div');
+    document.body.appendChild(host);
+    const shadow = host.attachShadow({ mode: 'open' });
+    const button = document.createElement('button');
+    shadow.appendChild(button);
+
+    const walked: Element[] = [];
+
+    expect(() => {
+      for (const el of eachParentElement(button, true)) {
+        walked.push(el);
+
+        if (el === host) {
+          button.remove();
+        }
+      }
+    }).not.toThrow();
+
+    expect(walked).toEqual([button, host, document.body]);
+  });
 });
 
 describe('shouldCaptureElement', () => {
