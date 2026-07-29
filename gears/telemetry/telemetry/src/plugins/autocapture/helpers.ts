@@ -253,7 +253,16 @@ export function* eachParentElement(target: Element, includeTarget = false) {
       continue;
     }
 
-    yield curEl.parentNode as Element;
-    curEl = curEl.parentNode as Element;
+    // The loop's only boundary is `body`, which a target outside it never reaches: an element in
+    // `<head>` walks up to `document` (nodeType 9), and one inside a `DocumentFragment` walks up to
+    // the fragment (nodeType 11). Neither is an `Element` and neither has a `dataset`, which the
+    // walk's consumer dereferences on the very next line — so stop here rather than yield one
+    // typed as `Element`.
+    if (!isElementNode(curEl.parentNode)) {
+      return;
+    }
+
+    yield curEl.parentNode;
+    curEl = curEl.parentNode;
   }
 }
