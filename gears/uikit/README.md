@@ -13,7 +13,7 @@ See [docs/DESIGN.md](docs/DESIGN.md) for the full design and
 
 ## Layout
 
-```
+```text
 registry/          component sources — the source of truth
 ├── ui/            component .tsx files
 ├── tokens/        theme.css — CSS variables, light/dark
@@ -21,6 +21,7 @@ registry/          component sources — the source of truth
 demo/              Vite app: every component live (kitchen sink)
 docs/              design doc, usage guides
 ai/                llms.txt, agent usage rules
+QUICKSTART.md      consumer setup
 ```
 
 ## Development

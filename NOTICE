@@ -21,6 +21,6 @@ limitations under the License.
 
 Third-party attributions:
 
-- gears/uikit includes design tokens and component code derived from shadcn/ui
+- gears/uikit includes design tokens derived from shadcn/ui
   (https://github.com/shadcn-ui/ui), Copyright (c) 2023 shadcn, licensed under
   the MIT License.

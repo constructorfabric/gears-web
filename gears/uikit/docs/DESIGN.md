@@ -28,16 +28,17 @@ The gear is **not an npm library but a shadcn-style component registry**: a set 
 
 - Gear lives at `gears/uikit/` following the telemetry gear layout:
 
-```
+```text
 gears/uikit/
 ├── registry/                component sources — the source of truth
 │   ├── ui/                  button.tsx, input.tsx, select.tsx, dialog.tsx ...
 │   ├── tokens/              theme.css — CSS variables, light/dark
 │   └── registry.json        registry item descriptions
 ├── demo/                    Vite app: every component live (kitchen sink)
-├── docs/                    QUICKSTART, usage guides, this document
+├── docs/                    design and usage guides (this document)
 ├── ai/                      llms.txt, agent usage rules
-└── scripts/                 build-registry: generate r/*.json from sources
+├── scripts/                 build-registry: generate r/*.json from sources
+└── QUICKSTART.md            consumer setup
 ```
 
 - Component stack: **React 19 + Base UI + Tailwind 4 + CVA**.
