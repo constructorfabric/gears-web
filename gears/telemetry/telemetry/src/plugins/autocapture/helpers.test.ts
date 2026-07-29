@@ -84,4 +84,27 @@ describe('shouldCaptureElement', () => {
     expect(() => shouldCaptureElement(form)).not.toThrow();
     expect(shouldCaptureElement(form)).toBe(true);
   });
+
+  test('rejects a field whose name or id looks sensitive', () => {
+    document.body.innerHTML = `
+      <input id="plain" name="comment">
+      <input id="a" name="cardnum">
+      <input id="ssn-field">
+    `;
+
+    expect(shouldCaptureElement(document.getElementById('plain')!)).toBe(true);
+    expect(shouldCaptureElement(document.getElementById('a')!)).toBe(false);
+    expect(shouldCaptureElement(document.getElementById('ssn-field')!)).toBe(false);
+  });
+
+  test('falls back to the id when `name` is not a string', () => {
+    // Regression: a truthy non-string `name` short-circuited the `||`, so the `typeof` guard
+    // skipped the sensitive-name test entirely and never reached the `id` fallback.
+    const widget = document.createElement('my-widget');
+    widget.id = 'ssn-field';
+    (widget as unknown as { name: unknown }).name = { toString: () => 'harmless' };
+    document.body.appendChild(widget);
+
+    expect(shouldCaptureElement(widget)).toBe(false);
+  });
 });

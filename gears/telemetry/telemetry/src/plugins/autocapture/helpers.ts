@@ -85,14 +85,18 @@ export function shouldCaptureElement(el: Element) {
   }
 
   // filter out data from fields that look like sensitive fields
-  const name = (el as HTMLInputElement).name || el.id || '';
-  // it's possible for el.name or el.id to be a DOM element if el is a form with a child input[name="name"]
-  if (typeof name === 'string') {
-    const sensitiveNameRegex =
-      /^cvv|exp|pass|securitynum|socialsec|socsec|cc|cardnum|ccnum|creditcard|csc|cvc|ssn|pwd|routing|seccode|securitycode/i;
-    if (sensitiveNameRegex.test(name.replace(/[^a-zA-Z0-9]/g, ''))) {
-      return false;
-    }
+  // `el.name` carries the same non-string hazard as `el.type` above — a <form> whose named getter
+  // is shadowed by a child control named "name", or a custom element handed an object-valued
+  // `name` property by a component framework. `el.name || el.id` short-circuited on such a value
+  // and then failed the `typeof` check, so the whole sensitive-name test was skipped and `el.id`
+  // was never consulted, for exactly the elements most likely to need it.
+  const rawName: unknown = (el as HTMLInputElement).name;
+  const name = typeof rawName === 'string' && rawName ? rawName : el.id;
+
+  const sensitiveNameRegex =
+    /^cvv|exp|pass|securitynum|socialsec|socsec|cc|cardnum|ccnum|creditcard|csc|cvc|ssn|pwd|routing|seccode|securitycode/i;
+  if (sensitiveNameRegex.test(name.replace(/[^a-zA-Z0-9]/g, ''))) {
+    return false;
   }
 
   return true;
