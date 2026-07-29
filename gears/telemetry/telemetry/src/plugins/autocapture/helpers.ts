@@ -84,8 +84,11 @@ export function shouldCaptureElement(el: Element) {
 
   // filter out data from fields that look like sensitive fields
   const rawName: unknown = (el as HTMLInputElement).name;
-  // it's possible for el.name or el.id to be a DOM element if el is a form with a child input[name="name"]
-  const name = typeof rawName === 'string' && rawName ? rawName : el.id;
+  const rawId: unknown = el.id;
+  // it's possible for el.name or el.id to be a DOM element if el is a form with a child
+  // input[name="name"] or input[name="id"]
+  const name =
+    (typeof rawName === 'string' && rawName) || (typeof rawId === 'string' && rawId) || '';
 
   const sensitiveNameRegex =
     /^cvv|exp|pass|securitynum|socialsec|socsec|cc|cardnum|ccnum|creditcard|csc|cvc|ssn|pwd|routing|seccode|securitycode/i;

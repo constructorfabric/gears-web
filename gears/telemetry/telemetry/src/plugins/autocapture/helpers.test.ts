@@ -132,6 +132,19 @@ describe('shouldCaptureElement', () => {
     expect(shouldCaptureElement(document.getElementById('ssn-field')!)).toBe(false);
   });
 
+  test('survives an element whose `name` and `id` are both non-strings', () => {
+    // Chrome reaches this shape on its own: HTMLFormElement is [LegacyOverrideBuiltIns], so
+    // <form><input name="name"><input name="id"> makes both properties the child controls.
+    // happy-dom does not implement that, so the shape is built directly here.
+    const widget = document.createElement('my-widget');
+    (widget as unknown as { name: unknown }).name = { toString: () => 'harmless' };
+    Object.defineProperty(widget, 'id', { value: document.createElement('input') });
+    document.body.appendChild(widget);
+
+    expect(() => shouldCaptureElement(widget)).not.toThrow();
+    expect(shouldCaptureElement(widget)).toBe(true);
+  });
+
   test('falls back to the id when `name` is not a string', () => {
     const widget = document.createElement('my-widget');
     widget.id = 'ssn-field';
