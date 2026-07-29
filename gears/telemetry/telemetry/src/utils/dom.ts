@@ -24,8 +24,8 @@ export function isTag(el: Element | undefined | null, tag: string): el is HTMLEl
 
 // nodeType 11 is what a live element's `parentNode` resolves to when it sits at the top of a
 // shadow tree — the runtime DOM-walk case this guards.
-export function isShadowRoot(el: Element | ParentNode | undefined | null): el is ShadowRoot {
-  return !!el && el.nodeType === 11;
+export function isShadowRoot(el: Node | ParentNode | undefined | null): el is ShadowRoot {
+  return !!el && el.nodeType === 11 && 'host' in el;
 }
 
 export function isSensitiveElement(el: Element): boolean {

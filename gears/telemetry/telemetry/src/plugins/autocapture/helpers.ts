@@ -75,21 +75,25 @@ export function shouldCaptureValue(
 
 export function shouldCaptureElement(el: Element) {
   // don't include hidden or password fields
-  const type = (el as HTMLInputElement).type || '';
+  const rawType: unknown = (el as HTMLInputElement).type;
+  const type = typeof rawType === 'string' ? rawType : '';
   // it's possible for el.type to be a DOM element if el is a form with a child input[name="type"]
   if (['hidden', 'password'].includes(type.toLowerCase())) {
     return false;
   }
 
   // filter out data from fields that look like sensitive fields
-  const name = (el as HTMLInputElement).name || el.id || '';
-  // it's possible for el.name or el.id to be a DOM element if el is a form with a child input[name="name"]
-  if (typeof name === 'string') {
-    const sensitiveNameRegex =
-      /^cvv|exp|pass|securitynum|socialsec|socsec|cc|cardnum|ccnum|creditcard|csc|cvc|ssn|pwd|routing|seccode|securitycode/i;
-    if (sensitiveNameRegex.test(name.replace(/[^a-zA-Z0-9]/g, ''))) {
-      return false;
-    }
+  const rawName: unknown = (el as HTMLInputElement).name;
+  const rawId: unknown = el.id;
+  // it's possible for el.name or el.id to be a DOM element if el is a form with a child
+  // input[name="name"] or input[name="id"]
+  const name =
+    (typeof rawName === 'string' && rawName) || (typeof rawId === 'string' && rawId) || '';
+
+  const sensitiveNameRegex =
+    /^cvv|exp|pass|securitynum|socialsec|socsec|cc|cardnum|ccnum|creditcard|csc|cvc|ssn|pwd|routing|seccode|securitycode/i;
+  if (sensitiveNameRegex.test(name.replace(/[^a-zA-Z0-9]/g, ''))) {
+    return false;
   }
 
   return true;
@@ -245,15 +249,21 @@ export function* eachParentElement(target: Element, includeTarget = false) {
 
   let curEl = target;
   while (curEl.parentNode && !isTag(curEl, 'body')) {
-    if (isShadowRoot(curEl.parentNode)) {
+    const parent = curEl.parentNode;
+
+    if (isShadowRoot(parent)) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      yield (curEl.parentNode as any).host;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      curEl = (curEl.parentNode as any).host;
+      const { host } = parent as any;
+      yield host;
+      curEl = host;
       continue;
     }
 
-    yield curEl.parentNode as Element;
-    curEl = curEl.parentNode as Element;
+    if (!isElementNode(parent)) {
+      return;
+    }
+
+    yield parent;
+    curEl = parent;
   }
 }
