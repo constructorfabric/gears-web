@@ -75,9 +75,7 @@ export function shouldCaptureValue(
 
 export function shouldCaptureElement(el: Element) {
   // don't include hidden or password fields
-  // it's possible for el.type to be a DOM element if el is a form with a child input[name="type"],
-  // so this is guarded the same way the `name` branch below is — an unguarded `.toLowerCase()`
-  // throws a TypeError that escapes the autocapture walk and the document listener.
+  // `el.type` is a DOM element, not a string, when `el` is a form with a child input[name="type"]
   const rawType: unknown = (el as HTMLInputElement).type;
   const type = typeof rawType === 'string' ? rawType : '';
   if (['hidden', 'password'].includes(type.toLowerCase())) {
@@ -85,11 +83,7 @@ export function shouldCaptureElement(el: Element) {
   }
 
   // filter out data from fields that look like sensitive fields
-  // `el.name` carries the same non-string hazard as `el.type` above — a <form> whose named getter
-  // is shadowed by a child control named "name", or a custom element handed an object-valued
-  // `name` property by a component framework. `el.name || el.id` short-circuited on such a value
-  // and then failed the `typeof` check, so the whole sensitive-name test was skipped and `el.id`
-  // was never consulted, for exactly the elements most likely to need it.
+  // `el.name` carries the same non-string hazard, so fall through to `el.id` rather than past both
   const rawName: unknown = (el as HTMLInputElement).name;
   const name = typeof rawName === 'string' && rawName ? rawName : el.id;
 
@@ -264,11 +258,8 @@ export function* eachParentElement(target: Element, includeTarget = false) {
       continue;
     }
 
-    // The loop's only boundary is `body`, which a target outside it never reaches: an element in
-    // `<head>` walks up to `document` (nodeType 9), and one inside a `DocumentFragment` walks up to
-    // the fragment (nodeType 11). Neither is an `Element` and neither has a `dataset`, which the
-    // walk's consumer dereferences on the very next line — so stop here rather than yield one
-    // typed as `Element`.
+    // `body` is the only boundary below, and a target outside it never reaches one: `<head>` walks
+    // up to `document`, a fragment's child to the fragment. Consumers expect an `Element`.
     if (!isElementNode(parent)) {
       return;
     }
