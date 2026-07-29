@@ -165,6 +165,25 @@ describe('Telemetry Client', () => {
     expect(testEvent!.value).toHaveProperty('context_session_id', mockSession.id);
   });
 
+  test('should merge caller-supplied context_user_data instead of replacing it', () => {
+    localStorage.setItem(getSessionKey(), JSON.stringify(mockSession));
+
+    const telemetry = createTelemetry({ ...mockAppInfo });
+    telemetry.start();
+    onTestFinished(() => telemetry.destroy());
+
+    telemetry.logEvent({ name: 'test_event', context_user_data: { plan: 'pro' } });
+    vi.runAllTimers();
+
+    const records = fetchMock.mock.calls.flatMap(
+      (call) => (JSON.parse(call[1].body) as TelemetryApiPayload).records,
+    );
+    const testEvent = records.find((record) => record.value.name === 'test_event');
+
+    expect(testEvent!.value.context_user_data?.plan).toBe(JSON.stringify('pro'));
+    expect(testEvent!.value.context_user_data?.app_platform).toBe(JSON.stringify('Web'));
+  });
+
   test("should not let a caller-supplied id or time_triggered override the event's real identity", () => {
     localStorage.setItem(getSessionKey(), JSON.stringify(mockSession));
 

@@ -26,6 +26,9 @@ export function devicePlugin(): TelemetryPlugin {
         record.context_os_platform = parsed.getPlatformType(true);
         record.context_device_id = deviceId;
         record.context_user_data = {
+          // Spread first so a caller-supplied bag survives instead of being silently replaced,
+          // while the SDK's own keys stay authoritative.
+          ...record.context_user_data,
           app_platform: 'Web',
           mobile_web: window.matchMedia('(max-width: 720px)').matches,
           locale: navigator.language,
