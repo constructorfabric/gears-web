@@ -75,8 +75,11 @@ export function shouldCaptureValue(
 
 export function shouldCaptureElement(el: Element) {
   // don't include hidden or password fields
-  const type = (el as HTMLInputElement).type || '';
-  // it's possible for el.type to be a DOM element if el is a form with a child input[name="type"]
+  // it's possible for el.type to be a DOM element if el is a form with a child input[name="type"],
+  // so this is guarded the same way the `name` branch below is — an unguarded `.toLowerCase()`
+  // throws a TypeError that escapes the autocapture walk and the document listener.
+  const rawType: unknown = (el as HTMLInputElement).type;
+  const type = typeof rawType === 'string' ? rawType : '';
   if (['hidden', 'password'].includes(type.toLowerCase())) {
     return false;
   }

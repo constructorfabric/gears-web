@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test } from 'vitest';
-import { eachParentElement } from './helpers';
+import { eachParentElement, shouldCaptureElement } from './helpers';
 
 // Deliberately a separate file from autocapture.test.ts, which `vi.mock('./helpers')`.
 
@@ -58,5 +58,30 @@ describe('eachParentElement', () => {
     document.body.appendChild(wrapper);
 
     expect([...eachParentElement(button)]).toEqual([wrapper, document.body]);
+  });
+});
+
+describe('shouldCaptureElement', () => {
+  test('rejects hidden and password inputs', () => {
+    document.body.innerHTML = `
+      <input id="hidden-field" type="hidden">
+      <input id="password-field" type="password">
+      <input id="text-field" type="text">
+    `;
+
+    expect(shouldCaptureElement(document.getElementById('hidden-field')!)).toBe(false);
+    expect(shouldCaptureElement(document.getElementById('password-field')!)).toBe(false);
+    expect(shouldCaptureElement(document.getElementById('text-field')!)).toBe(true);
+  });
+
+  test('survives a form whose named getter shadows `type` with a child control', () => {
+    // Regression: `form.type` resolves to the child input, and the unguarded `.toLowerCase()`
+    // threw a TypeError straight out of the autocapture walk and the document listener.
+    document.body.innerHTML = '<form id="shadowed"><input name="type"></form>';
+    const form = document.getElementById('shadowed')!;
+
+    expect(typeof (form as unknown as { type: unknown }).type).not.toBe('string');
+    expect(() => shouldCaptureElement(form)).not.toThrow();
+    expect(shouldCaptureElement(form)).toBe(true);
   });
 });
