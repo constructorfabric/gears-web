@@ -22,10 +22,13 @@ export function isTag(el: Element | undefined | null, tag: string): el is HTMLEl
   return !!el && !!el.tagName && el.tagName.toLowerCase() === tag.toLowerCase();
 }
 
-// nodeType 11 is what a live element's `parentNode` resolves to when it sits at the top of a
-// shadow tree — the runtime DOM-walk case this guards.
-export function isShadowRoot(el: Element | ParentNode | undefined | null): el is ShadowRoot {
-  return !!el && el.nodeType === 11;
+// A live element's `parentNode` resolves to a `ShadowRoot` when it sits at the top of a shadow
+// tree — the runtime DOM-walk case this guards. nodeType 11 alone is not enough: an ordinary
+// `DocumentFragment` reports it too, and a fragment has no `host`, so the walk that consumes this
+// guard used to step onto `undefined` and throw. `'host' in el` is the distinguishing feature, and
+// unlike `instanceof ShadowRoot` it still holds for a node adopted from another realm.
+export function isShadowRoot(el: Node | ParentNode | undefined | null): el is ShadowRoot {
+  return !!el && el.nodeType === 11 && 'host' in el;
 }
 
 export function isSensitiveElement(el: Element): boolean {
