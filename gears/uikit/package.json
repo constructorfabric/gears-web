@@ -1,0 +1,27 @@
+{
+  "name": "@gears-web/uikit",
+  "version": "0.1.0",
+  "description": "shadcn-style component registry for the Gears ecosystem: white-label UI components consumers pull into their own codebase.",
+  "license": "Apache-2.0",
+  "author": "Constructor Fabric Foundation",
+  "homepage": "https://github.com/constructorfabric/gears-web/tree/main/gears/uikit#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/constructorfabric/gears-web.git",
+    "directory": "gears/uikit"
+  },
+  "bugs": {
+    "url": "https://github.com/constructorfabric/gears-web/issues"
+  },
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "build": "shadcn build registry/registry.json --output dist/r"
+  },
+  "devDependencies": {
+    "shadcn": "4.16.0"
+  }
+}
