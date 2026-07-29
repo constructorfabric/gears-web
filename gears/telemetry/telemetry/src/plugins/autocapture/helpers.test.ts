@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, test } from 'vitest';
 import { eachParentElement, shouldCaptureElement } from './helpers';
 
-// Deliberately a separate file from autocapture.test.ts, which `vi.mock('./helpers')`.
+// Separate file because autocapture.test.ts calls `vi.mock('./helpers')`.
 
 afterEach(() => {
   document.body.innerHTML = '';
@@ -29,8 +29,6 @@ describe('eachParentElement', () => {
   });
 
   test('stops at a DocumentFragment root instead of stepping onto its missing host', () => {
-    // Regression: a fragment reports nodeType 11 like a shadow root but has no `host`, so the walk
-    // used to yield `undefined` and then throw on the next iteration's `curEl.parentNode`.
     const fragment = document.createDocumentFragment();
     const button = document.createElement('button');
     fragment.appendChild(button);
@@ -39,8 +37,6 @@ describe('eachParentElement', () => {
   });
 
   test('stops below the document for an element outside body', () => {
-    // Regression: nothing on this path hits the `body` boundary, so the walk climbed past <html>
-    // and yielded the Document — which has no `dataset` for the consumer to read.
     const meta = document.createElement('meta');
     meta.setAttribute('data-test', '');
     document.head.appendChild(meta);
@@ -61,9 +57,6 @@ describe('eachParentElement', () => {
   });
 
   test('keeps walking when a consumer detaches the current element between yields', () => {
-    // Regression: the generator suspends at `yield`, and the consumer resuming it runs untrusted
-    // element hooks. Re-reading `curEl.parentNode` after the yield read `null` for a detached
-    // element, and the next loop condition dereferenced it.
     const wrapper = document.createElement('div');
     const button = document.createElement('button');
     wrapper.appendChild(button);
@@ -85,7 +78,6 @@ describe('eachParentElement', () => {
   });
 
   test('keeps crossing a shadow boundary when the current element is detached between yields', () => {
-    // Same hazard on the shadow branch, where the re-read was `curEl.parentNode.host`.
     const host = document.createElement('div');
     document.body.appendChild(host);
     const shadow = host.attachShadow({ mode: 'open' });
@@ -122,8 +114,6 @@ describe('shouldCaptureElement', () => {
   });
 
   test('survives a form whose named getter shadows `type` with a child control', () => {
-    // Regression: `form.type` resolves to the child input, and the unguarded `.toLowerCase()`
-    // threw a TypeError straight out of the autocapture walk and the document listener.
     document.body.innerHTML = '<form id="shadowed"><input name="type"></form>';
     const form = document.getElementById('shadowed')!;
 
@@ -145,8 +135,6 @@ describe('shouldCaptureElement', () => {
   });
 
   test('falls back to the id when `name` is not a string', () => {
-    // Regression: a truthy non-string `name` short-circuited the `||`, so the `typeof` guard
-    // skipped the sensitive-name test entirely and never reached the `id` fallback.
     const widget = document.createElement('my-widget');
     widget.id = 'ssn-field';
     (widget as unknown as { name: unknown }).name = { toString: () => 'harmless' };

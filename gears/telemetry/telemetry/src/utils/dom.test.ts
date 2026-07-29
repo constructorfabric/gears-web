@@ -14,8 +14,6 @@ describe('isShadowRoot', () => {
   });
 
   test('rejects a plain DocumentFragment, which reports the same nodeType 11', () => {
-    // The distinguishing feature is `host`, not the node type: treating every nodeType 11 as a
-    // shadow root made the autocapture walk read `.host` off a fragment and step onto `undefined`.
     expect(isShadowRoot(document.createDocumentFragment())).toBe(false);
   });
 
