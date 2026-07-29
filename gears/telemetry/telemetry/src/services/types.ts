@@ -6,7 +6,8 @@ export type TelemetryService = {
   start: () => TelemetryService;
   destroy: () => void;
   logEvent: TelemetryLogEvent;
-  identify: (id: TelemetryUserId) => TelemetryService;
+  /** Attach a user id to subsequent events. Call with no argument to clear it. */
+  identify: (id?: TelemetryUserId) => TelemetryService;
 };
 
 export type TelemetryLogEvent = (...args: TelemetryLogEventParams) => void;

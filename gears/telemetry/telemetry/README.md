@@ -62,7 +62,7 @@ Call `destroy()` on teardown to remove listeners and stop the scheduler.
 | Method                 | Returns          | Description                                                                          |
 | ---------------------- | ---------------- | ------------------------------------------------------------------------------------ |
 | `start()`              | `TelemetryService`| Begin collecting. Installs listeners and starts the flush scheduler.                  |
-| `identify(id)`         | `TelemetryService`| Attach a user id to subsequent events. `string \| number`.                            |
+| `identify(id?)`        | `TelemetryService`| Attach a user id to subsequent events. `string \| number`. Call with no argument to clear it. |
 | `logEvent(name, data?)`| `void`           | Record a custom event. Also accepts a full record: `logEvent({ name, data, ... })`.    |
 | `plugin(...plugins)`   | `TelemetryService`| Register plugins. Falsy entries are ignored, so `cond && myPlugin()` is safe.          |
 | `destroy()`            | `void`           | Remove listeners, stop the scheduler, and stop collecting.                             |

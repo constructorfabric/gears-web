@@ -270,6 +270,25 @@ describe('Telemetry Client', () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
+  test('should clear the user id when identify() is called with no argument', () => {
+    // The sign-out path: without this, every event for the rest of the page carries the id of the
+    // user who just left.
+    localStorage.setItem(getSessionKey(), JSON.stringify(mockSession));
+
+    const telemetry = createTelemetry({ ...mockAppInfo });
+    telemetry.identify(mockUserInfo.id);
+    telemetry.identify();
+    telemetry.start();
+    onTestFinished(() => telemetry.destroy());
+
+    telemetry.logEvent('test_event');
+    vi.runAllTimers();
+
+    const payload: TelemetryApiPayload = JSON.parse(fetchMock.mock.calls[0][1].body);
+    const testEvent = payload.records.find((record) => record.value.name === 'test_event');
+    expect(testEvent!.value).not.toHaveProperty('context_user_id');
+  });
+
   test('Should test v2', () => {
     const chain = ['a', 'b', 'service_test'];
     const telemetry = createTelemetry({
