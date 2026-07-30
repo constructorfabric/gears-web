@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    // tsup's dts worker injects baseUrl, which TS 6 flags as deprecated.
+    "ignoreDeprecations": "6.0",
     "target": "esnext",
     "module": "preserve",
     "lib": ["esnext", "dom", "dom.iterable"],

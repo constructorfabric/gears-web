@@ -32,4 +32,7 @@ jobs:
           cache-dependency-path: gears/uikit/ui-kit/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
+      - run: pnpm test
       - run: pnpm build
+      - name: Consumer acceptance check (pack → clean Vite project)
+        run: ../scripts/verify-consumer.sh

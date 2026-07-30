@@ -2,26 +2,31 @@
 
 ## Prerequisites
 
-A React 19 project with Tailwind CSS v4.
+A React 19 project with a bundler that handles CSS imports (Vite, webpack,
+etc. — any modern default works). No CSS framework or plugins required.
 
 ## 1. Install
 
+While the package is unpublished (gears-web phase), install it from a tarball:
+
 ```bash
-pnpm add @gears/ui-kit
+# in gears/uikit/ui-kit
+pnpm build && pnpm pack
+
+# in your project
+pnpm add ./gears-web-ui-kit-0.1.0.tgz
 ```
+
+After the kit is published, this becomes a regular `pnpm add`.
 
 ## 2. Wire up styles
 
-In your main CSS file:
+Import once, e.g. in your entry module:
 
-```css
-@import 'tailwindcss';
-@import '@gears/ui-kit/theme.css';
-@source '../node_modules/@gears/ui-kit';
+```ts
+import '@gears-web/ui-kit/theme.css'; // design tokens (CSS variables)
+import '@gears-web/ui-kit/styles.css'; // compiled component styles
 ```
-
-The `@source` line lets Tailwind see the utility classes used inside the
-package; `theme.css` brings the design tokens.
 
 Dark mode: set `data-theme="dark"` on `<html>`; without it the theme follows
 `prefers-color-scheme` (opt out with `data-theme="light"`).
@@ -29,10 +34,14 @@ Dark mode: set `data-theme="dark"` on `<html>`; without it the theme follows
 ## 3. Use components
 
 > Component exports land with the first component batch; today the package
-> ships the theme only.
+> ships the theme and the `Button` pipeline prototype.
 
 ```tsx
-import { Button, Dialog } from '@gears/ui-kit';
+import { Button } from '@gears-web/ui-kit';
+
+<Button variant="outline" size="sm">
+  Save
+</Button>;
 ```
 
 To re-brand, override the CSS variables from `theme.css` in your own styles.
@@ -46,8 +55,8 @@ available yet — this section becomes actionable when the AI-docs PR lands.
 ## Updating
 
 ```bash
-pnpm up @gears/ui-kit
+pnpm up @gears-web/ui-kit
 ```
 
-Fixes and design updates arrive with the new version; see the changelog for
-breaking changes.
+(After the kit is published.) Fixes and design updates arrive with the new
+version; see the changelog for breaking changes.

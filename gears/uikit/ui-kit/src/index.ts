@@ -1,7 +1,8 @@
 /**
- * @gears/ui-kit — standard component base for Constructor Fabric templates.
+ * @gears-web/ui-kit — standard component base for Constructor Fabric templates.
  *
- * Component exports land with the first component batch; the theme is
- * available today via `@gears/ui-kit/theme.css`.
+ * Styles ship separately: import '@gears-web/ui-kit/theme.css' (design tokens)
+ * and '@gears-web/ui-kit/styles.css' (compiled component styles) once in the
+ * consumer entry module.
  */
-export {};
+export { Button, type ButtonProps } from './components/button/button';
