@@ -1,0 +1,88 @@
+{
+  "name": "@gears-web/ui-kit",
+  "version": "0.1.0",
+  "description": "Standard React component base for Constructor Fabric front-end templates: Base UI behavior, CSS Modules styling, CVA variants.",
+  "license": "Apache-2.0",
+  "author": "Constructor Fabric Foundation",
+  "homepage": "https://github.com/constructorfabric/gears-web/tree/main/gears/uikit#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/constructorfabric/gears-web.git",
+    "directory": "gears/uikit/ui-kit"
+  },
+  "bugs": {
+    "url": "https://github.com/constructorfabric/gears-web/issues"
+  },
+  "keywords": [
+    "ui",
+    "components",
+    "react",
+    "base-ui",
+    "css-modules",
+    "constructorfabric"
+  ],
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20.19"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "NOTICE",
+    "README.md"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./theme.css": "./dist/theme.css",
+    "./styles.css": "./dist/index.css"
+  },
+  "sideEffects": [
+    "*.css"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "lint": "pnpm run lint:code && pnpm run lint:ts",
+    "lint:code": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "lint:ts": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "class-variance-authority": "0.7.1"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.4",
+    "@stylistic/eslint-plugin": "5.7.1",
+    "@testing-library/react": "16.3.2",
+    "@types/node": "22.15.29",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "eslint": "9.39.4",
+    "eslint-config-prettier": "10.1.8",
+    "eslint-plugin-prettier": "5.5.5",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "eslint-plugin-unused-imports": "4.3.0",
+    "globals": "17.1.0",
+    "jsdom": "26.1.0",
+    "prettier": "3.8.1",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "tsup": "8.5.1",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.59.0",
+    "vitest": "4.1.4"
+  }
+}

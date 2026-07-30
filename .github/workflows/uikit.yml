@@ -1,0 +1,38 @@
+name: uikit
+
+on:
+  push:
+    branches: [main]
+    paths: ['gears/uikit/**', '.github/workflows/uikit.yml']
+  pull_request:
+    paths: ['gears/uikit/**', '.github/workflows/uikit.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: gears/uikit/ui-kit
+    steps:
+      # Actions pinned to immutable commit SHAs (supply-chain hardening); the
+      # trailing tag comment lets Dependabot bump the pin on new releases.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        with:
+          version: 10
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: gears/uikit/ui-kit/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm build
+      - name: Consumer acceptance check (pack → clean Vite project)
+        run: ../scripts/verify-consumer.sh
