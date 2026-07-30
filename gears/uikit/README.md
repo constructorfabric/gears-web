@@ -1,12 +1,14 @@
 # UI Kit Gear
 
-A shadcn-style component registry for the Gears ecosystem. Consumers pull component
-sources into their own codebase with the shadcn CLI and own the code — white-label
-by editing tokens and components in place.
+The standard React component base for Constructor Fabric front-end templates,
+shipped as the open-source npm package `@gears/ui-kit`. FrontX and Studio
+assemble interfaces from templates built on it; templates may mix in other
+components, and other companies can plug their own kits into their own
+templates.
 
 - Stack: React 19 + Base UI + Tailwind 4 + CVA
-- Distribution: static registry JSON on GitHub Pages, `npx shadcn add @gears/<item>`
-- AI-first: works with the official shadcn MCP server out of the box
+- Distribution: npm package; fixes and design updates arrive via a dependency bump
+- Customization: basic branding via CSS-variable tokens; deep changes = fork
 
 See [docs/DESIGN.md](docs/DESIGN.md) for the full design and
 [QUICKSTART.md](QUICKSTART.md) for consumer setup.
@@ -14,10 +16,7 @@ See [docs/DESIGN.md](docs/DESIGN.md) for the full design and
 ## Layout
 
 ```text
-registry/          component sources — the source of truth
-├── ui/            component .tsx files
-├── tokens/        theme.css — CSS variables, light/dark
-└── registry.json  registry item descriptions
+ui-kit/            npm package @gears/ui-kit (components, theme, build)
 demo/              Vite app: every component live (kitchen sink)
 docs/              design doc, usage guides
 ai/                llms.txt, agent usage rules
@@ -27,8 +26,7 @@ QUICKSTART.md      consumer setup
 ## Development
 
 ```bash
+cd ui-kit
 pnpm install
-pnpm build        # generates dist/r/*.json from registry/registry.json
+pnpm build        # vite lib build + type declarations into dist/
 ```
-
-The registry is published to GitHub Pages by CI on every push to `main`.

@@ -2,59 +2,49 @@
 
 ## Prerequisites
 
-A React project with Tailwind CSS v4 and a `components.json`
-(run `npx shadcn init` if you don't have one).
+A React 19 project with Tailwind CSS v4.
 
-## 1. Register the `@gears` registry
-
-Add to your `components.json`:
-
-```json
-{
-  "registries": {
-    "@gears": "https://constructorfabric.github.io/gears-web/uikit/r/{name}.json"
-  }
-}
-```
-
-## 2. Install components
+## 1. Install
 
 ```bash
-npx shadcn add @gears/theme
-npx shadcn add @gears/button @gears/dialog
+pnpm add @gears/ui-kit
 ```
 
-The CLI copies the sources into your project, installs npm dependencies, and adds
-the theme CSS variables. The code is yours — edit it freely. To re-brand, override
-the variables installed by `@gears/theme`.
+## 2. Wire up styles
+
+In your main CSS file:
+
+```css
+@import 'tailwindcss';
+@import '@gears/ui-kit/theme.css';
+@source '../node_modules/@gears/ui-kit';
+```
+
+The `@source` line lets Tailwind see the utility classes used inside the
+package; `theme.css` brings the design tokens.
 
 Dark mode: set `data-theme="dark"` on `<html>`; without it the theme follows
 `prefers-color-scheme` (opt out with `data-theme="light"`).
 
-## 3. Let agents use the kit (optional)
+## 3. Use components
 
-The kit works with the official shadcn MCP server — agents can list `@gears`
-components, read their docs, and install them.
-
-Claude Code:
-
-```bash
-claude mcp add shadcn -- npx shadcn@latest mcp
+```tsx
+import { Button, Dialog } from '@gears/ui-kit';
 ```
 
-Cursor (`.cursor/mcp.json`):
+To re-brand, override the CSS variables from `theme.css` in your own styles.
+For deep customization, fork the kit or build your template on another kit.
 
-```json
-{
-  "mcpServers": {
-    "shadcn": { "command": "npx", "args": ["shadcn@latest", "mcp"] }
-  }
-}
-```
+## 4. Let agents use the kit (optional)
 
-Both read the registries from your project's `components.json`.
+The package ships `llms.txt` and per-component usage docs — point your agent at
+`node_modules/@gears/ui-kit/llms.txt` (details land together with the AI docs).
 
 ## Updating
 
-Updates are explicit: `npx shadcn diff` shows how a registry item differs from
-your local copy; apply changes deliberately.
+```bash
+pnpm up @gears/ui-kit
+```
+
+Fixes and design updates arrive with the new version; see the changelog for
+breaking changes.

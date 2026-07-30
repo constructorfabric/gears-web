@@ -1,11 +1,11 @@
 /*
  * Gears UI Kit theme tokens.
  *
- * Semantic-level CSS variables consumed by all registry components.
+ * Semantic-level CSS variables consumed by all kit components.
  * The neutral base derives from shadcn/ui (MIT, https://ui.shadcn.com);
  * see the repository NOTICE file for attribution.
  *
- * Branding happens on the consumer side by overriding these variables.
+ * Basic branding happens on the consumer side by overriding these variables.
  * Dark mode: set data-theme="dark" on <html>, or rely on the
  * prefers-color-scheme fallback.
  */
