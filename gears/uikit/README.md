@@ -17,7 +17,7 @@ See [docs/DESIGN.md](docs/DESIGN.md) for the full design and
 
 ```text
 ui-kit/            npm package @gears/ui-kit (components, theme, build)
-demo/              Vite app: every component live (kitchen sink)
+demo/              planned Vite app: every component live (kitchen sink)
 docs/              design doc, usage guides
 ai/                llms.txt, agent usage rules
 QUICKSTART.md      consumer setup

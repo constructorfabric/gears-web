@@ -28,6 +28,9 @@ Dark mode: set `data-theme="dark"` on `<html>`; without it the theme follows
 
 ## 3. Use components
 
+> Component exports land with the first component batch; today the package
+> ships the theme only.
+
 ```tsx
 import { Button, Dialog } from '@gears/ui-kit';
 ```
@@ -35,10 +38,10 @@ import { Button, Dialog } from '@gears/ui-kit';
 To re-brand, override the CSS variables from `theme.css` in your own styles.
 For deep customization, fork the kit or build your template on another kit.
 
-## 4. Let agents use the kit (optional)
+## 4. Let agents use the kit (optional, planned)
 
-The package ships `llms.txt` and per-component usage docs — point your agent at
-`node_modules/@gears/ui-kit/llms.txt` (details land together with the AI docs).
+The package will ship `llms.txt` and per-component usage docs for agents. Not
+available yet — this section becomes actionable when the AI-docs PR lands.
 
 ## Updating
 

@@ -3,9 +3,9 @@ name: uikit
 on:
   push:
     branches: [main]
-    paths: ['gears/uikit/**']
+    paths: ['gears/uikit/**', '.github/workflows/uikit.yml']
   pull_request:
-    paths: ['gears/uikit/**']
+    paths: ['gears/uikit/**', '.github/workflows/uikit.yml']
 
 permissions:
   contents: read
